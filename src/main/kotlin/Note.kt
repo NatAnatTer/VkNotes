@@ -1,5 +1,5 @@
 data class Note(
-    val id: Int, // Идентификатор заметки.
+   // val id: Int, // Идентификатор заметки.
     val title: String, // Заголовок заметки.
     val text: String, // Текст заметки.
     val privacy: Int, //Уровень доступа к заметке.
@@ -14,6 +14,7 @@ data class Note(
     //  val readComments: Int, //Количество прочитанных комментариев (только при запросе информации о заметке текущего пользователя).
     // val viewUrl: String, // URL страницы для отображения заметки.
 ) {
-
+    private val id: UInt = NoteService.getId() // Идентификатор заметки.
+    fun getNoteId() = this.id
 
 }
