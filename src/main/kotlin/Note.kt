@@ -1,12 +1,13 @@
 data class Note(
-   // val id: Int, // Идентификатор заметки.
+
     val title: String, // Заголовок заметки.
     val text: String, // Текст заметки.
     val privacy: Int, //Уровень доступа к заметке.
     val commentPrivacy: Int, // Уровень доступа к комментированию заметки.
     val privacyView: String, // настройки приватности просмотра заметки в специальном формате.список слов, разделенных через запятую, по умолчанию all,
     val privacyComment: String, // Настройки приватности комментирования заметки в специальном формате.
-    val isDelete: Boolean, // флаг указывает удаленная (true) заметка или активная (false)
+    var isDelete: Boolean, // флаг указывает заметка удалена (true) или активная (false)
+    val dateCreate: UInt //Дата создания заметки
     // val canComment: Boolean, // настройки приватности комментирования заметки в специальном формате. список слов, разделенных через запятую, по умолчанию all
     // val textWiki: String // Тэги ссылок на wiki
     // val date: Int, // Дата создания заметки в формате Unixtime.
@@ -14,7 +15,12 @@ data class Note(
     //  val readComments: Int, //Количество прочитанных комментариев (только при запросе информации о заметке текущего пользователя).
     // val viewUrl: String, // URL страницы для отображения заметки.
 ) {
-    private val id: UInt = NoteService.getId() // Идентификатор заметки.
+    private var id: UInt = NoteService.setNoteId() // Идентификатор заметки.
     fun getNoteId() = this.id
+    fun editNoteId(idNote: UInt){
+        this.id = idNote
+    }
+
+
 
 }
