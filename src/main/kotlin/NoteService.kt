@@ -1,8 +1,6 @@
 object NoteService {
 
     private val notes = mutableListOf<Note>()
-
-    // private val notes = mutableSetOf<Note>()
     private val comments = mutableListOf<Comment>()
 
     var lastId = 0U
@@ -26,8 +24,17 @@ object NoteService {
         }
     }
 
-    fun add(note: Note) {
+    fun add(title: String, text: String, privacyView: String, privacyComment: String): UInt {
+        val note = Note(title, text, privacyView, privacyComment, false, System.currentTimeMillis())
         notes.add(note)
+        return note.getNoteId()
+    }
+
+    fun add(noteId: UInt, replyTo: UInt, message: String): UInt {
+        val comment = Comment(noteId, replyTo, message, false, System.currentTimeMillis())
+        comments.add(comment)
+        return comment.getIdComment()
+
     }
 
 
@@ -51,8 +58,6 @@ object NoteService {
                 notes[index] = noteEdited.copy(
                     title = note.title,
                     text = note.text,
-                    privacy = note.privacy,
-                    commentPrivacy = note.commentPrivacy,
                     privacyView = note.privacyView,
                     privacyComment = note.privacyComment
                 )
@@ -69,15 +74,11 @@ object NoteService {
 
     fun notesGet(noteIds: String, offset: Int, count: Int, sort: UInt): List<Note> {
         val resultList = mutableListOf<Note>()
-        var offsetFact = 0U
-        var countFact = 0U
         val ids = noteIds.split(", ")
         val range = offset..offset + count
         println(range)
         for (i in range) {
-
             val intId: UInt = ids.getOrNull(i)?.toUInt() ?: continue
-
             for (note in notes) {
                 if (note.getNoteId() == intId && !note.isDelete) {
                     resultList.add(note)
@@ -85,7 +86,6 @@ object NoteService {
                 }
             }
         }
-
         if (sort == 1U) {
             return resultList.sortedBy { it.dateCreate }
         }
@@ -93,57 +93,15 @@ object NoteService {
 
     }
 
-    fun notesGetById() {
-//    Возвращает заметку по её id.
-//
-//    Параметры
-//    note_id
-//    positive
-//
-//    Идентификатор заметки.
-//
-//    owner_id
-//    positive
-//
-//    Идентификатор владельца заметки.
-//
-//    need_wiki
-//    checkbox
-//
-//    Определяет, требуется ли в ответе wiki-представление заметки (работает, только если запрашиваются заметки текущего пользователя).
-
-    }
-
-
-    fun createComment() {
-//        Параметры
-//        note_id
-//        positive
-//
-//        Идентификатор заметки.
-//
-//        owner_id
-//        positive
-//
-//        Идентификатор владельца заметки.
-//
-//        reply_to
-//        positive
-//
-//        Идентификатор пользователя, ответом на комментарий которого является добавляемый комментарий (не передаётся, если комментарий не является ответом).
-//
-//        message
-//        string
-//
-//        Текст комментария.
-//
-//        guid
-//        string
-//
-//        Уникальный идентификатор, предназначенный для предотвращения повторной отправки одинакового комментария.
-//
-//        Результат
-//        После успешного выполнения возвращает идентификатор созданного комментария (cid).
+    fun notesGetById(noteId: UInt): Note {
+        for (note in notes) {
+            if (note.getNoteId() == noteId && !note.isDelete) {
+                return note
+            } else if (note.getNoteId() == noteId && note.isDelete) {
+                throw NoteDeletedException("Эта заметка удалена")
+            }
+        }
+        throw NoteDeletedException("Заметка не найдена")
     }
 
 
