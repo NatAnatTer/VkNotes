@@ -3,13 +3,22 @@ object NoteService {
     private val notes = mutableListOf<Note>()
     private val comments = mutableListOf<Comment>()
 
-    var lastId = 0U
+
+    fun setLastId1(lastIdForTest: UInt){
+        lastId = lastIdForTest
+    }
+    fun setLastCommentId1(lastCommentIdForTest: UInt){
+        lastCommentId = lastCommentIdForTest
+    }
+
+    private var lastId = 0U
+
     fun setNoteId(): UInt {
         lastId += 1U
         return lastId
     }
 
-    var lastCommentId = 0U
+    private var lastCommentId = 0U
     fun setCommentId(): UInt {
         lastCommentId += 1U
         return lastCommentId
@@ -141,11 +150,10 @@ object NoteService {
         for (note in notes) {
             if (note.getNoteId() == noteId && !note.isDelete) {
                 val lastIndex = comments.lastIndex
-                var range: Int
-                if (offset + count <= lastIndex) {
-                    range = offset + count
+                val range: Int = if (offset + count <= lastIndex) {
+                    offset + count
                 } else {
-                    range = lastIndex
+                    lastIndex
                 }
 
                 for (i in offset..range) {
