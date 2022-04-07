@@ -4,10 +4,11 @@ object NoteService {
     val comments = mutableListOf<Comment>()
 
 
-    fun setLastId1(lastIdForTest: UInt){
+    fun setLastId1(lastIdForTest: UInt) {
         lastId = lastIdForTest
     }
-    fun setLastCommentId1(lastCommentIdForTest: UInt){
+
+    fun setLastCommentId1(lastCommentIdForTest: UInt) {
         lastCommentId = lastCommentIdForTest
     }
 
@@ -23,7 +24,6 @@ object NoteService {
         lastCommentId += 1U
         return lastCommentId
     }
-
 
 
     fun add(title: String, text: String, privacyView: String, privacyComment: String): UInt {
@@ -163,6 +163,7 @@ object NoteService {
         return resultList.sortedByDescending { it.dateCreate }
 
     }
+
     @Throws(NoteDeletedException::class)
     fun restoreComment(commentId: UInt): Boolean {
         for (comment in comments) {

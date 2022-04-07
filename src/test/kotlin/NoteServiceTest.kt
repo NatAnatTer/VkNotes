@@ -652,7 +652,7 @@ class NoteServiceTest {
         val offsetTest = 0
         val countTest = 4
         val sortTest = 1U
-      val  result = getComment(
+        val result = getComment(
             noteId = noteIdTest,
             offset = offsetTest,
             count = countTest,
@@ -683,13 +683,14 @@ class NoteServiceTest {
             replyTo = 1U,
             message = "Second comment"
         )
-        for (comment in comments){
+        for (comment in comments) {
             comment.isDelete = true
         }
         val commentIdTest = 1U
         val result = restoreComment(commentIdTest)
         assertTrue(result)
     }
+
     @Test(expected = NoteDeletedException::class)
     fun restoreCommentNotDeletedTest() {
         setLastCommentId1(0U)
@@ -715,6 +716,7 @@ class NoteServiceTest {
         val commentIdTest = 1U
         restoreComment(commentIdTest)
     }
+
     @Test
     fun restoreCommentTest1() {
         setLastCommentId1(0U)
