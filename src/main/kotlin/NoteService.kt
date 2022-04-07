@@ -1,7 +1,7 @@
 object NoteService {
 
-    private val notes = mutableListOf<Note>()
-    private val comments = mutableListOf<Comment>()
+    val notes = mutableListOf<Note>()
+    val comments = mutableListOf<Comment>()
 
 
     fun setLastId1(lastIdForTest: UInt){
@@ -24,18 +24,18 @@ object NoteService {
         return lastCommentId
     }
 
-    fun printNoteList() {
-        println("------------------------------------------------------")
-        println("Note:")
-        for (note in notes) {
-            println("Id note: ${note.getNoteId()}")
-            println(note)
-        }
-        for (comment in comments) {
-            println("Id comment: ${comment.getIdComment()}")
-            println(comment)
-        }
-    }
+//    fun printNoteList() {
+//        println("------------------------------------------------------")
+//        println("Note:")
+//        for (note in notes) {
+//            println("Id note: ${note.getNoteId()}")
+//            println(note)
+//        }
+//        for (comment in comments) {
+//            println("Id comment: ${comment.getIdComment()}")
+//            println(comment)
+//        }
+//    }
 
     fun add(title: String, text: String, privacyView: String, privacyComment: String): UInt {
         val note = Note(title, text, privacyView, privacyComment, false, System.currentTimeMillis())
@@ -43,7 +43,7 @@ object NoteService {
         return note.getNoteId()
     }
 
-    fun add(noteId: UInt, replyTo: UInt, message: String): UInt {
+    fun addComment(noteId: UInt, replyTo: UInt, message: String): UInt {
         val comment = Comment(noteId, replyTo, message, false, System.currentTimeMillis())
         comments.add(comment)
         return comment.getIdComment()
