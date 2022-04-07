@@ -141,6 +141,7 @@ object NoteService {
             } else if (note.getNoteId() == noteId && note.isDelete) {
                 throw NoteDeletedException("Эта заметка удалена")
             }
+            throw NoteDeletedException("Заметка не найдена")
         }
         throw NoteDeletedException("Заметка не найдена")
     }
@@ -155,15 +156,14 @@ object NoteService {
                 } else {
                     lastIndex
                 }
-
                 for (i in offset..range) {
                     if (comments[i].noteId == noteId && !comments[i].isDelete) {
                         resultList.add(comments[i])
-                    } else if (comments[i].noteId == noteId && !comments[i].isDelete) {
-                        throw NoteDeletedException("Комментарий удален")
+                    } else if (comments[i].noteId == noteId && comments[i].isDelete) {
+                        continue
                     }
                 }
-            } else if (note.getNoteId() == noteId && !note.isDelete) {
+            } else if (note.getNoteId() == noteId && note.isDelete) {
                 throw NoteDeletedException("Заметка удалена")
             }
         }

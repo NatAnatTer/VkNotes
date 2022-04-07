@@ -5,7 +5,11 @@ import NoteService.delete
 import NoteService.deleteComment
 import NoteService.edit
 import NoteService.editComment
+import NoteService.get
+import NoteService.getComment
 import NoteService.notes
+import NoteService.notesGetById
+import NoteService.restoreComment
 import NoteService.setCommentId
 import NoteService.setLastCommentId1
 import NoteService.setLastId1
@@ -378,7 +382,6 @@ class NoteServiceTest {
 
     @Test
     fun getTest() {
-
         setLastCommentId1(0U)
         setLastId1(0U)
         notes.clear()
@@ -395,24 +398,350 @@ class NoteServiceTest {
             privacyView = "all",
             privacyComment = "all",
         )
-        val noteIds = "1, 2"
-        val offset = 0
-        val count = 20
-        val sort = 0U
+        val noteIdsTest = "1, 2"
+        val offsetTest = 0
+        val countTest = 20
+        val sortTest = 1U
+        val result = get(
+            noteIds = noteIdsTest,
+            offset = offsetTest,
+            count = countTest,
+            sort = sortTest
+        )
+        assertEquals(notes, result)
+    }
+
+//    @Test
+//    fun getTestSorted() {
+//        setLastCommentId1(0U)
+//        setLastId1(0U)
+//        notes.clear()
+//        comments.clear()
+//        add(
+//            title = "Second note",
+//            text = "Text Second note",
+//            privacyView = "all",
+//            privacyComment = "all",
+//        )
+//        add(
+//            title = "First note",
+//            text = "Text first note",
+//            privacyView = "all",
+//            privacyComment = "all",
+//        )
+//        val noteIdsTest = "1, 2"
+//        val offsetTest = 0
+//        val countTest = 20
+//        val sortTest = 0U
+//        val result = get(
+//            noteIds = noteIdsTest,
+//            offset = offsetTest,
+//            count = countTest,
+//            sort = sortTest
+//        )
+//        notes.sortedByDescending { it.dateCreate }
+//
+//        assertEquals(notes, result)
+//    }
+
+    @Test
+    fun notesGetByIdTest() {
+        setLastCommentId1(0U)
+        setLastId1(0U)
+        notes.clear()
+        comments.clear()
+        add(
+            title = "First note",
+            text = "Text first note",
+            privacyView = "all",
+            privacyComment = "all",
+        )
+        add(
+            title = "Second note",
+            text = "Text Second note",
+            privacyView = "all",
+            privacyComment = "all",
+        )
+        val noteIdTest = 1U
+        val result = notesGetById(noteIdTest)
+        notes.withIndex()
+        assertEquals(notes[0], result)
+    }
+
+    @Test(expected = NoteDeletedException::class)
+    fun notesGetByIdTestNotFound() {
+        setLastCommentId1(0U)
+        setLastId1(0U)
+        notes.clear()
+        comments.clear()
+        add(
+            title = "First note",
+            text = "Text first note",
+            privacyView = "all",
+            privacyComment = "all",
+        )
+        add(
+            title = "Second note",
+            text = "Text Second note",
+            privacyView = "all",
+            privacyComment = "all",
+        )
+        val noteIdTest = 2U
+        notesGetById(noteIdTest)
+    }
+
+    @Test(expected = NoteDeletedException::class)
+    fun notesGetByIdTestDeleted() {
+        setLastCommentId1(0U)
+        setLastId1(0U)
+        notes.clear()
+        comments.clear()
+        add(
+            title = "First note",
+            text = "Text first note",
+            privacyView = "all",
+            privacyComment = "all",
+        )
+        add(
+            title = "Second note",
+            text = "Text Second note",
+            privacyView = "all",
+            privacyComment = "all",
+        )
+        for (note in notes) {
+            note.isDelete = true
+        }
+        val noteIdTest = 0U
+        notesGetById(noteIdTest)
+    }
+
+    @Test
+    fun getCommentTest() {
+        setLastCommentId1(0U)
+        setLastId1(0U)
+        notes.clear()
+        comments.clear()
+        add(
+            title = "First note",
+            text = "Text first note",
+            privacyView = "all",
+            privacyComment = "all",
+        )
+        addComment(
+            noteId = 1U,
+            replyTo = 1U,
+            message = "First comment"
+        )
+        addComment(
+            noteId = 1U,
+            replyTo = 1U,
+            message = "Second comment"
+        )
+        val noteIdTest = 1U
+        val offsetTest = 0
+        val countTest = 1
+        val sortTest = 1U
+        val result = getComment(
+            noteId = noteIdTest,
+            offset = offsetTest,
+            count = countTest,
+            sort = sortTest
+        )
+        assertEquals(comments, result)
+    }
+
+    @Test(expected = NoteDeletedException::class)
+    fun getCommentTestNoteDeleted() {
+        setLastCommentId1(0U)
+        setLastId1(0U)
+        notes.clear()
+        comments.clear()
+        add(
+            title = "First note",
+            text = "Text first note",
+            privacyView = "all",
+            privacyComment = "all",
+        )
+        for (note in notes) {
+            note.isDelete = true
+        }
+        addComment(
+            noteId = 1U,
+            replyTo = 1U,
+            message = "First comment"
+        )
+        addComment(
+            noteId = 1U,
+            replyTo = 1U,
+            message = "Second comment"
+        )
+        val noteIdTest = 1U
+        val offsetTest = 0
+        val countTest = 4
+        val sortTest = 1U
+        getComment(
+            noteId = noteIdTest,
+            offset = offsetTest,
+            count = countTest,
+            sort = sortTest
+        )
 
     }
 
     @Test
-    fun notesGetById() {
+    fun getCommentTestOutOfRange() {
+        setLastCommentId1(0U)
+        setLastId1(0U)
+        notes.clear()
+        comments.clear()
+        add(
+            title = "First note",
+            text = "Text first note",
+            privacyView = "all",
+            privacyComment = "all",
+        )
+        addComment(
+            noteId = 1U,
+            replyTo = 1U,
+            message = "First comment"
+        )
+        addComment(
+            noteId = 1U,
+            replyTo = 1U,
+            message = "Second comment"
+        )
+        val noteIdTest = 1U
+        val offsetTest = 0
+        val countTest = 4
+        val sortTest = 1U
+        val result = getComment(
+            noteId = noteIdTest,
+            offset = offsetTest,
+            count = countTest,
+            sort = sortTest
+        )
+        assertEquals(comments, result)
     }
 
     @Test
-    fun getComment() {
+    fun getCommentTestCommentDeleted() {
+        setLastCommentId1(0U)
+        setLastId1(0U)
+        notes.clear()
+        comments.clear()
+        add(
+            title = "First note",
+            text = "Text first note",
+            privacyView = "all",
+            privacyComment = "all",
+        )
+        addComment(
+            noteId = 1U,
+            replyTo = 1U,
+            message = "First comment"
+        )
+        addComment(
+            noteId = 1U,
+            replyTo = 1U,
+            message = "Second comment"
+        )
+        for (comment in comments) {
+            comment.isDelete = true
+        }
+        val noteIdTest = 1U
+        val offsetTest = 0
+        val countTest = 4
+        val sortTest = 1U
+      val  result = getComment(
+            noteId = noteIdTest,
+            offset = offsetTest,
+            count = countTest,
+            sort = sortTest
+        )
+        assertTrue(result.isEmpty())
     }
 
     @Test
-    fun restoreComment() {
+    fun restoreCommentTest() {
+        setLastCommentId1(0U)
+        setLastId1(0U)
+        notes.clear()
+        comments.clear()
+        add(
+            title = "First note",
+            text = "Text first note",
+            privacyView = "all",
+            privacyComment = "all",
+        )
+        addComment(
+            noteId = 1U,
+            replyTo = 1U,
+            message = "First comment"
+        )
+        addComment(
+            noteId = 1U,
+            replyTo = 1U,
+            message = "Second comment"
+        )
+        for (comment in comments){
+            comment.isDelete = true
+        }
+        val commentIdTest = 1U
+        val result = restoreComment(commentIdTest)
+        assertTrue(result)
     }
+    @Test(expected = NoteDeletedException::class)
+    fun restoreCommentNotDeletedTest() {
+        setLastCommentId1(0U)
+        setLastId1(0U)
+        notes.clear()
+        comments.clear()
+        add(
+            title = "First note",
+            text = "Text first note",
+            privacyView = "all",
+            privacyComment = "all",
+        )
+        addComment(
+            noteId = 1U,
+            replyTo = 1U,
+            message = "First comment"
+        )
+        addComment(
+            noteId = 1U,
+            replyTo = 1U,
+            message = "Second comment"
+        )
+        val commentIdTest = 1U
+        restoreComment(commentIdTest)
+    }
+    @Test
+    fun restoreCommentTest1() {
+        setLastCommentId1(0U)
+        setLastId1(0U)
+        notes.clear()
+        comments.clear()
+        add(
+            title = "First note",
+            text = "Text first note",
+            privacyView = "all",
+            privacyComment = "all",
+        )
+        addComment(
+            noteId = 1U,
+            replyTo = 1U,
+            message = "First comment"
+        )
+        addComment(
+            noteId = 1U,
+            replyTo = 1U,
+            message = "Second comment"
+        )
+        val commentIdTest = 5U
+        val result = restoreComment(commentIdTest)
+        assertFalse(result)
+    }
+
 }
 
 
