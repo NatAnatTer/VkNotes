@@ -24,18 +24,7 @@ object NoteService {
         return lastCommentId
     }
 
-//    fun printNoteList() {
-//        println("------------------------------------------------------")
-//        println("Note:")
-//        for (note in notes) {
-//            println("Id note: ${note.getNoteId()}")
-//            println(note)
-//        }
-//        for (comment in comments) {
-//            println("Id comment: ${comment.getIdComment()}")
-//            println(comment)
-//        }
-//    }
+
 
     fun add(title: String, text: String, privacyView: String, privacyComment: String): UInt {
         val note = Note(title, text, privacyView, privacyComment, false, System.currentTimeMillis())
